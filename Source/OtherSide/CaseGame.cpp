@@ -88,13 +88,18 @@ void ACaseGameMode::BuildHouse() {
         Shape(FVector(X-340,400,160),FVector(4.2,.25,3.6)); Shape(FVector(X+340,400,160),FVector(4.2,.25,3.6));
         Shape(FVector(X,900,35),FVector(2.5,1.2,.7));
         auto* L=GetWorld()->SpawnActor<APointLight>(FVector(X,750,280),FRotator::ZeroRotator);
-        L->GetPointLightComponent()->SetMobility(EComponentMobility::Movable);
-        L->GetPointLightComponent()->SetIntensity(3000); L->GetPointLightComponent()->SetAttenuationRadius(1100);
-        L->GetPointLightComponent()->SetLightColor(FLinearColor(.72,.82,1));
+        if(auto* Point=L->FindComponentByClass<UPointLightComponent>()) {
+            Point->SetMobility(EComponentMobility::Movable);
+            Point->SetIntensity(3000); Point->SetAttenuationRadius(1100);
+            Point->SetLightColor(FLinearColor(.72,.82,1));
+        }
     }
     auto* Safe=GetWorld()->SpawnActor<APointLight>(FVector(-1200,-350,230),FRotator::ZeroRotator);
-    Safe->GetPointLightComponent()->SetIntensity(5000); Safe->GetPointLightComponent()->SetAttenuationRadius(850);
-    Safe->GetPointLightComponent()->SetLightColor(FLinearColor(1,.65,.3));
+    if(auto* Point=Safe->FindComponentByClass<UPointLightComponent>()) {
+        Point->SetMobility(EComponentMobility::Movable);
+        Point->SetIntensity(5000); Point->SetAttenuationRadius(850);
+        Point->SetLightColor(FLinearColor(1,.65,.3));
+    }
     Label(FVector(-1550,-610,180),TEXT("DOI / SAÍDA\nAbrigo iluminado"));
     Clue(FVector(-1250,-480,70),TEXT("REGISTRO / E"),"Registry");
     Clue(FVector(-1100,850,115),TEXT("FOTOGRAFIA / C"),"Photo");
@@ -134,8 +139,8 @@ void ACaseGameMode::Action(int32 Kind) {
     Noise=5;
     if(A->ActorHasTag("Exit")) {Case.Leave();return;}
     if(A->ActorHasTag("Ritual")) {Notify(Case.DocumentRecovered?TEXT("Selo: 1 Nome / 2 Data / 3 Silêncio. Para abrir o limiar em vez de contê-lo: quadro, opção 3."):TEXT("O selo precisa do nome registrado no documento do cofre."));return;}
-    const FName Tags[]={"Registry","Photo","Recording","Testimony","Report"};
-    for(unsigned I=0;I<5;++I) if(A->ActorHasTag(Tags[I])) {
+    const FName EvidenceTags[]={"Registry","Photo","Recording","Testimony","Report"};
+    for(unsigned I=0;I<5;++I) if(A->ActorHasTag(EvidenceTags[I])) {
         if((I==1&&Kind!=1)||(I==2&&Kind!=2)||((I!=1&&I!=2)&&Kind!=0)) {Notify(I==1?TEXT("Use C para registrar a fotografia."):I==2?TEXT("Use G para ouvir e registrar a fita."):TEXT("Use E para examinar."));return;}
         auto R=Case.Collect(static_cast<Evidence>(I));
         if(R==Result::MissingEvidence) Notify(TEXT("Cofre lacrado: formule uma conclusão no quadro antes de recuperar o documento."));

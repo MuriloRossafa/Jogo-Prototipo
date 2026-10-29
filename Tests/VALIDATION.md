@@ -32,3 +32,9 @@ Falhas da integração devem ser investigadas pelos logs, sem registrar como apr
 ## Ajuste para a instalação informada
 
 Associação alterada de 5.6 para 5.5 após a imagem do Launcher mostrando 5.5.4. O script agora consulta LauncherInstalled.dat, registro do Windows e caminho padrão, validando a versão via Build.version. -EngineRoot e UE_ENGINE_ROOT continuam tendo prioridade. Alterações inspecionadas em Linux; detecção Windows e compatibilidade C++/UHT com 5.5.4 ainda não executadas. Não houve atualização ou instalação de Unreal no computador do usuário.
+
+## Compilação relatada pelo usuário no Windows
+
+As imagens mostram Unreal 5.5.4 em `C:\Program Files\Epic Games\UE_5.5`, MSVC 14.38 e Windows SDK 10.0.22621.0. A primeira tentativa falhou com C1083 ao criar PCH no caminho do OneDrive. Após trocar o diretório, a compilação chegou ao código do módulo e reportou C2039 em GetPointLightComponent e ocultação de AActor::Tags por variável local.
+
+Correções: busca tipada com FindComponentByClass<UPointLightComponent>(), verificação de ponteiro, mobilidade dinâmica também para a luz do abrigo e renomeação da lista local para EvidenceTags. O diagnóstico vem da imagem do usuário; recompilação destas correções no Unreal ainda pendente. A imagem mostra o final do log, portanto outros erros anteriores não estão descartados. Nenhum empacotamento ou Play confirmado.
