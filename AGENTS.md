@@ -2,7 +2,7 @@
 
 Responda em português brasileiro. Leia LEIA-ME.md e Tests/VALIDATION.md antes de alterar o projeto.
 
-Projeto novo de investigação e terror, Unreal Engine 5.6 como alvo inicial, primeira pessoa e Windows. Preserve a distinção entre regras portáveis e integração não validada no Unreal. Não substitua o projeto por jogo de navegador.
+Projeto novo de investigação e terror, Unreal Engine 5.5 como alvo atual (5.5.4 mostrado pelo usuário), primeira pessoa e Windows. Preserve a distinção entre regras portáveis e integração não validada no Unreal. Não substitua o projeto por jogo de navegador.
 
 Use o checkout existente; não crie worktree sem pedido. Testes portáveis: `bash Scripts/test-core.sh`. Scripts Windows: VerificarInstalacao.cmd, PrepararProjeto.cmd, AbrirEditor.cmd e GerarAplicativo.cmd. Detecte o motor real antes de escolher toolchain. Não prometa acesso ao PC do usuário.
 

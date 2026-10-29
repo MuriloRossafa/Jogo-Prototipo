@@ -10,7 +10,7 @@
 
 ## Não executado / bloqueio de plataforma
 
-Unreal Editor e PowerShell não disponíveis nesta sessão Linux; instalação Windows do usuário inacessível. Versão do Unreal/GPU/MSVC/SDK do usuário desconhecida.
+Unreal Editor e PowerShell não disponíveis nesta sessão Linux; instalação Windows do usuário inacessível. A imagem enviada pelo usuário mostra Unreal 5.5.4 no Launcher. Caminho da instalação, GPU, MSVC e SDK ainda não verificados.
 
 Não executados: parsing PowerShell, Diagnose no Windows, UHT, compilação Editor/Game, Python no Unreal, materiais, geração do mapa, Play, testes visuais/sonoros, desempenho, cook, empacotamento ou abertura de executável. Não há `.exe` gerado.
 
@@ -28,3 +28,7 @@ Não executados: parsing PowerShell, Diagnose no Windows, UHT, compilação Edit
 10. GerarAplicativo.cmd, verificar caminho real, executar fora do Editor e repetir um caso. Distribuir diretório completo.
 
 Falhas da integração devem ser investigadas pelos logs, sem registrar como aprovados testes não executados.
+
+## Ajuste para a instalação informada
+
+Associação alterada de 5.6 para 5.5 após a imagem do Launcher mostrando 5.5.4. O script agora consulta LauncherInstalled.dat, registro do Windows e caminho padrão, validando a versão via Build.version. -EngineRoot e UE_ENGINE_ROOT continuam tendo prioridade. Alterações inspecionadas em Linux; detecção Windows e compatibilidade C++/UHT com 5.5.4 ainda não executadas. Não houve atualização ou instalação de Unreal no computador do usuário.

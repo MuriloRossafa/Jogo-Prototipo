@@ -11,14 +11,39 @@ $Started = $false
 try {
     Start-Transcript -Path (Join-Path $LogDir ((Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + $Mode + '.log')) | Out-Null
     $Started = $true
+    $Association = (Get-Content -LiteralPath $Project -Raw | ConvertFrom-Json).EngineAssociation
     if (-not $EngineRoot) {
-        $DefaultEngine = Join-Path $env:ProgramFiles 'Epic Games/UE_5.6'
-        if (Test-Path -LiteralPath $DefaultEngine) { $EngineRoot = $DefaultEngine }
+        $Candidates = @()
+        $Launcher = Join-Path $env:ProgramData 'Epic/UnrealEngineLauncher/LauncherInstalled.dat'
+        if (Test-Path -LiteralPath $Launcher) {
+            try {
+                $Installed = Get-Content -LiteralPath $Launcher -Raw | ConvertFrom-Json
+                $Candidates += $Installed.InstallationList | Where-Object { $_.AppName -eq "UE_$Association" } | ForEach-Object { $_.InstallLocation }
+            } catch {
+                Write-Warning "Could not read Launcher installations: $_"
+            }
+        }
+        $RegistryPath = "HKLM:\SOFTWARE\EpicGames\Unreal Engine\$Association"
+        if (Test-Path -LiteralPath $RegistryPath) {
+            $Candidates += (Get-ItemProperty -LiteralPath $RegistryPath -ErrorAction SilentlyContinue).InstalledDirectory
+        }
+        $Candidates += Join-Path $env:ProgramFiles "Epic Games/UE_$Association"
+        foreach ($Candidate in ($Candidates | Where-Object { $_ } | Select-Object -Unique)) {
+            if (-not (Test-Path -LiteralPath (Join-Path $Candidate 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe'))) { continue }
+            try {
+                $Detected = Get-Content -LiteralPath (Join-Path $Candidate 'Engine/Build/Build.version') -Raw | ConvertFrom-Json
+                if ("$($Detected.MajorVersion).$($Detected.MinorVersion)" -eq $Association) {
+                    $EngineRoot = $Candidate
+                    break
+                }
+            } catch { Write-Warning "Ignoring invalid engine candidate: $Candidate" }
+        }
     }
-    if (-not $EngineRoot) { throw 'Set UE_ENGINE_ROOT or pass -EngineRoot with the actual Unreal Engine 5.6 directory.' }
+    if (-not $EngineRoot) { throw "Unreal $Association not found. Set UE_ENGINE_ROOT or pass -EngineRoot with its actual directory." }
+    $EngineRoot = (Resolve-Path -LiteralPath $EngineRoot).Path
     $Version = Get-Content -LiteralPath (Join-Path $EngineRoot 'Engine/Build/Build.version') -Raw | ConvertFrom-Json
     Write-Host "Detected Unreal $($Version.MajorVersion).$($Version.MinorVersion).$($Version.PatchVersion) at $EngineRoot"
-    if ($Version.MajorVersion -ne 5 -or $Version.MinorVersion -ne 6) { throw 'This initial project targets UE 5.6. Other versions require a separate compatibility check.' }
+    if ("$($Version.MajorVersion).$($Version.MinorVersion)" -ne $Association) { throw "Project targets Unreal $Association. Selected engine has a different major/minor version." }
     $Editor = Join-Path $EngineRoot 'Engine/Binaries/Win64/UnrealEditor.exe'
     $EditorCmd = Join-Path $EngineRoot 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe'
     $Build = Join-Path $EngineRoot 'Engine/Build/BatchFiles/Build.bat'

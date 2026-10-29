@@ -1,6 +1,6 @@
 # Arquivos do Outro Lado — protótipo nativo 0.1
 
-Jogo de investigação e terror paranormal em primeira pessoa para Windows, com Unreal Engine 5. Este é um projeto novo, sem código de Turno da Meia-Noite. O alvo inicial é UE 5.6; não representa uma versão do motor detectada no computador do usuário.
+Jogo de investigação e terror paranormal em primeira pessoa para Windows, com Unreal Engine 5. Este é um projeto novo, sem código de Turno da Meia-Noite. O alvo atual é UE 5.5, alinhado ao 5.5.4 mostrado pelo usuário no Epic Games Launcher. A compatibilidade da integração ainda precisa ser confirmada por compilação.
 
 **Estado real:** regras portáveis compiladas e testadas em Linux. Código de integração Unreal e scripts Windows ainda não compilados/executados. Não existe aplicativo `.exe` gerado. Cenário de primitivas, interface provisória e som original de teste; sem arte final ou desempenho medido.
 
@@ -26,8 +26,8 @@ C fotografando e G gravando registram **pistas predefinidas apontadas**, sem cap
 
 ## Windows / Unreal
 
-1. Instale/reutilize Unreal Engine 5.6 e Visual Studio 2022 com Desenvolvimento de jogos com C++, MSVC e Windows SDK compatíveis com esse motor. Use os instaladores oficiais; os scripts não instalam ferramentas.
-2. Execute `VerificarInstalacao.cmd`. Ele verifica caminhos e lista SDKs, mas a compilação é que confirma compatibilidade. Usa `UE_ENGINE_ROOT` ou o caminho padrão `C:\Program Files\Epic Games\UE_5.6`. Para outro caminho, passe `-EngineRoot "D:\Epic\UE_5.6"` ao atalho.
+1. Instale/reutilize Unreal Engine 5.5.4 e Visual Studio 2022 com Desenvolvimento de jogos com C++, MSVC e Windows SDK compatíveis com esse motor. Use os instaladores oficiais; os scripts não instalam ferramentas.
+2. Execute `VerificarInstalacao.cmd`. Ele verifica caminhos e lista SDKs, mas a compilação é que confirma compatibilidade. Usa `UE_ENGINE_ROOT` ou procura a versão 5.5 nas instalações registradas no Epic Games Launcher, registro do Windows e caminho padrão `C:\Program Files\Epic Games\UE_5.5`. Para outro caminho, passe `-EngineRoot "D:\Epic\UE_5.5"` ao atalho.
 3. Execute `PrepararProjeto.cmd`: compila o módulo Editor e cria `/Game/Maps/Case001` e o som através do Python do Unreal. As duas etapas precisam terminar antes de abrir o jogo.
 4. Execute `AbrirEditor.cmd` e pressione Play em `/Game/Maps/Case001`. O mapa salvo é vazio: a casa é criada pelo GameMode em execução.
 5. Valide o caso e feche o Editor antes de `GerarAplicativo.cmd`. A saída prevista é `Builds\Windows`; o script imprime os caminhos dos executáveis somente após o empacotamento. **Distribua a pasta completa**, incluindo dados e pré-requisitos.
